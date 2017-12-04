@@ -10,9 +10,9 @@ Because of this the format might change in the future so it is recommended to sa
 ## Downloads
 
 You can download the binaries of the program in the releases section:
-[https://github.com/powertomato/STLenographer/releases/download/beta_1/STLenographer_beta_1.zip](Current)
+[Current](https://github.com/powertomato/STLenographer/releases/download/beta_1/STLenographer_beta_1.zip)
 
-[https://github.com/powertomato/STLenographer/releases](All releases)
+[All releases](https://github.com/powertomato/STLenographer/releases)
 
 ## Compiling
 
