@@ -10,15 +10,17 @@ Because of this the format might change in the future so it is recommended to sa
 ## Downloads
 
 You can download the binaries of the program in the releases section:
-[https://github.com/powertomato/STLenographer/releases]
+[https://github.com/powertomato/STLenographer/releases/download/beta_1/STLenographer_beta_1.zip](Current)
+
+[https://github.com/powertomato/STLenographer/releases](All releases)
 
 ## Compiling
 
 If you want to compile the program by yourself you can do so by using Visual Studio 2017:
-[https://www.visualstudio.com/de/vs/community]
+https://www.visualstudio.com/de/vs/community
 
 ## Tips
 
 If you like the program and want to support its development, please leave a tip at thingiverse:
-[https://www.thingiverse.com/powertomato/about]
+https://www.thingiverse.com/powertomato/about
 
