@@ -65,5 +65,20 @@ namespace STLenographer.Data {
         public override bool Equals(object other) {
             return Equals(other as Vertex);
         }
+
+        public static Vertex operator -(Vertex a, Vertex b) => new Vertex(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+
+        public static Vertex Cross(Vertex a, Vertex b) => new Vertex(
+            a.Y * b.Z - a.Z * b.Y,
+            a.Z * b.X - a.X * b.Z,
+            a.X * b.Y - a.Y * b.X);
+
+        public void Normalize()
+        {
+            double len = Math.Sqrt(X * X + Y * Y + Z * Z);
+            X = (float) (X / len);
+            Y = (float) (Y / len);
+            Z = (float) (Z / len);
+        }
     }
 }

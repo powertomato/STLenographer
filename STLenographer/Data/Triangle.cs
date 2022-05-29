@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace STLenographer.Data {
     public class Triangle : IEquatable<Triangle> {
@@ -13,10 +14,10 @@ namespace STLenographer.Data {
             if (v3 == null) throw new ArgumentNullException("v3");
             if (n == null) throw new ArgumentNullException("n");
 
-            _v1 = v1;
-            _v2 = v2;
-            _v3 = v3;
-            _n = n;
+            _v1 = new Vertex(v1);
+            _v2 = new Vertex(v2);
+            _v3 = new Vertex(v3);
+            _n = new Normal(n);
         }
 
         public Normal N {
@@ -33,6 +34,17 @@ namespace STLenographer.Data {
 
         public Vertex V3 {
             get { return _v3; }
+        }
+
+        public IEnumerable<Triangle> Subdivision { get {
+                Vertex center = new Vertex( (V1.X + V2.X + V3.X) / 3,
+                    (V1.Y + V2.Y + V3.Y) / 3,
+                    (V1.Z + V2.Z + V3.Z) / 3);
+
+                yield return new Triangle(V1, V2, center, N);
+                yield return new Triangle(center, V2, V3, N);
+                yield return new Triangle(V1, center, V3, N);
+            }
         }
 
         public override string ToString() {

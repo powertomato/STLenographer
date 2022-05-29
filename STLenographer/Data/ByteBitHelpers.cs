@@ -79,7 +79,7 @@ namespace STLenographer.Data {
         }
 
 
-        public bool HasData() {
+        public bool HasUnencodedData() {
             return (currentDataPtr < data.Count);
         }
 
@@ -101,11 +101,11 @@ namespace STLenographer.Data {
                 currentPtr = 0;
                 currentDataPtr++;
             }
-            return HasData();
+            return HasUnencodedData();
         }
 
         private void checkCapacity() {
-            if (!HasData()) {
+            if (!HasUnencodedData()) {
                 throw new InvalidOperationException("No data left!");
             }
         }
@@ -161,16 +161,16 @@ namespace STLenographer.Data {
 
         public List<byte> Data { get { return data; } }
 
-        private bool headerRead() {
+        private bool hasReadHeader() {
             return dataLen != -1;
         }
 
-        public bool ReadEverything() {
-            return headerRead() && dataRead == dataLen;
+        public bool HasReadEverything() {
+            return hasReadHeader() && dataRead == dataLen;
         }
 
         public bool MoveNext() {
-            if (ReadEverything()) {
+            if (HasReadEverything()) {
                 return true;
             }
             currentPtr++;
@@ -185,7 +185,7 @@ namespace STLenographer.Data {
                 currentByte = 0;
                 
             }
-            return ReadEverything();
+            return HasReadEverything();
         }
 
         private void checkChunk() {
@@ -209,10 +209,10 @@ namespace STLenographer.Data {
         }
 
         private void processByte(byte curByte) {
-            if (ReadEverything()) {
+            if (HasReadEverything()) {
                 return;
             }
-            if (headerRead()) {
+            if (hasReadHeader()) {
                 data.Add(curByte);
             } else {
 
@@ -256,7 +256,7 @@ namespace STLenographer.Data {
         }
 
         private void checkCapacity() {
-            if(ReadEverything()) {
+            if(HasReadEverything()) {
                 throw new InvalidOperationException("Can't read more than expected data length!");
             }
         }

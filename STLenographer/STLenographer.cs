@@ -79,15 +79,12 @@ namespace STLenographer {
                 writer = null;
             }
             
-            ByteReadHelper readHelper = readStenography();
             string msg = "";
-            if(readHelper.ReadEverything()) {
-                try {
-                    textBox3.Text = MyEncoding.GetString(readHelper.Data.ToArray());
-                    return true;
-                } catch(Exception e) {
-                    msg = "\n" + e.Message;
-                }
+            try {
+                textBox3.Text = readStenography();
+                return true;
+            } catch(Exception e) {
+                msg = "\n" + e.Message;
             }
             MessageBox.Show("Could not decode data!" + msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
@@ -173,110 +170,48 @@ namespace STLenographer {
         }
         
         private bool performStenography(byte[] data) {
-            ByteWriteHelper writeHelper = new ByteWriteHelper(checkBox1.Checked, textBox4.Text);
-            writeHelper.AppendData(new byte[] { 0x77, 0 }); //Magic byte, version
-            writeHelper.AppendData(BitConverter.GetBytes(data.Length));
-            writeHelper.AppendData(data);
-            writeHelper.FinalizeData();
-            
             List<Triangle> triangles = new List<Triangle>();
-            Dictionary<Vertex,Vertex> knownVertices = new Dictionary<Vertex,Vertex>();
-            foreach ( Triangle tri in reader.ReadFromFile(PathRead)) {
-                if (writeHelper.HasData()) {
-                    if (!(knownVertices.ContainsKey(tri.V1))) {
-                        Vertex tmp = new Vertex(tri.V1);
-                        performSteganographyPerVertex(tri.V1, writeHelper);
-                        knownVertices.Add(tmp, new Vertex(tri.V1));
+            triangles.AddRange(reader.ReadFromFile(PathRead));
+
+            bool success = false;
+
+            while (!success)
+            {
+                ByteWriteHelper writeHelper = new ByteWriteHelper(checkBox1.Checked, textBox4.Text);
+                writeHelper.AppendData(new byte[] { 0x77, 0 }); //Magic byte, version
+                writeHelper.AppendData(BitConverter.GetBytes(data.Length));
+                writeHelper.AppendData(data);
+                writeHelper.FinalizeData();
+
+                var stenographyWriter = new StenographyWriter(writeHelper);
+                stenographyWriter.AddTriangles(triangles);
+
+                if (stenographyWriter.HasUnencodedData)
+                {
+                    List<Triangle> newtriangles = new List<Triangle>();
+                    foreach (var tri in triangles)
+                    {
+                        newtriangles.AddRange(tri.Subdivision);
                     }
-                    if (!(knownVertices.ContainsKey(tri.V2))) {
-                        Vertex tmp = new Vertex(tri.V2);
-                        performSteganographyPerVertex(tri.V2, writeHelper);
-                        knownVertices.Add(tmp, new Vertex(tri.V2));
-                    }
-                    if (!(knownVertices.ContainsKey(tri.V3))) {
-                        Vertex tmp = new Vertex(tri.V3);
-                        performSteganographyPerVertex(tri.V3, writeHelper);
-                        knownVertices.Add(tmp, new Vertex(tri.V3));
-                    }
+                    triangles = newtriangles;
+                    continue;
+                } else
+                {
+                    success = true;
                 }
-                
-                if (knownVertices.ContainsKey(tri.V1)) {
-                    tri.V1.Set(knownVertices[tri.V1]);
-                }
-                if (knownVertices.ContainsKey(tri.V2)) {
-                    tri.V2.Set(knownVertices[tri.V2]);
-                }
-                if (knownVertices.ContainsKey(tri.V3)) {
-                    tri.V3.Set(knownVertices[tri.V3]);
-                }
-                triangles.Add(tri);
+
+                writer.WriteToFile(PathWrite, stenographyWriter.Triangles);
             }
-            if (writeHelper.HasData()) {
-                MessageBox.Show("The file is to small for the data amount!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            } else {
-                writer.WriteToFile(PathWrite, triangles);
-                return true;
-            }
-            return false;
+            return true;
         }
 
-        private void performSteganographyPerVertex(Vertex v, ByteWriteHelper writeHelper) {
-            if (!writeHelper.HasData()) return;
-            v.X = performSteganographyPerFloat(writeHelper.GetAndMoveCurrentBit(), v.X);
-            if (!writeHelper.HasData()) return;
-            v.Y = performSteganographyPerFloat(writeHelper.GetAndMoveCurrentBit(), v.Y);
-            if (!writeHelper.HasData()) return;
-            v.Z = performSteganographyPerFloat(writeHelper.GetAndMoveCurrentBit(), v.Z);
-        }
-
-        private float performSteganographyPerFloat(bool bit, float val) {
-            byte[] bts = BitConverter.GetBytes(val);
-            if (bit) {
-                bts[0] |= 1;
-            } else {
-                bts[0] &= 0xFE;
-            }            
-            return BitConverter.ToSingle(bts, 0);
-        }
-
-        public ByteReadHelper readStenography() {
+        public string readStenography() {
             ByteReadHelper readHelper = new ByteReadHelper(checkBox1.Checked, textBox4.Text);
-            HashSet<Vertex> knownVertices = new HashSet<Vertex>();
-            foreach (Triangle tri in reader.ReadFromFile(PathRead)) {
-                if (!readHelper.ReadEverything()) {
-                    if (!(knownVertices.Contains(tri.V1))) {
-                        Vertex tmp = new Vertex(tri.V1);
-                        readStenographyPerVertex(tri.V1, readHelper);
-                        knownVertices.Add(tmp);
-                    }
-                    if (!(knownVertices.Contains(tri.V2))) {
-                        Vertex tmp = new Vertex(tri.V2);
-                        readStenographyPerVertex(tri.V2, readHelper);
-                        knownVertices.Add(tmp);
-                    }
-                    if (!(knownVertices.Contains(tri.V3))) {
-                        Vertex tmp = new Vertex(tri.V3);
-                        readStenographyPerVertex(tri.V3, readHelper);
-                        knownVertices.Add(tmp);
-                    }
-                }
-            }
 
-            return readHelper;
-        }
+            StenographyReader stenographyReader = new StenographyReader(readHelper);
+            stenographyReader.ReadFromTriangles(reader.ReadFromFile(PathRead));
 
-        private void readStenographyPerVertex(Vertex v, ByteReadHelper readHelper) {
-            if (readHelper.ReadEverything()) return;
-            readHelper.SetCurrentBitAndMove(readStenographyByFloat(v.X));
-            if (readHelper.ReadEverything()) return;
-            readHelper.SetCurrentBitAndMove(readStenographyByFloat(v.Y));
-            if (readHelper.ReadEverything()) return;
-            readHelper.SetCurrentBitAndMove(readStenographyByFloat(v.Z));
-        }
-
-        private bool readStenographyByFloat(float val) {
-            byte[] bts = BitConverter.GetBytes(val);
-            return (bts[0] & 1) == 1;
+            return stenographyReader.GetString(MyEncoding);
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e) {

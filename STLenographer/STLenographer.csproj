@@ -61,6 +61,9 @@
     <Compile Include="Data\ByteBitHelpers.cs" />
     <Compile Include="Data\Helper.cs" />
     <Compile Include="Data\Normal.cs" />
+    <Compile Include="Data\RandomExtensions.cs" />
+    <Compile Include="Data\StenographyReader.cs" />
+    <Compile Include="Data\StenographyWriter.cs" />
     <Compile Include="Data\Triangle.cs" />
     <Compile Include="Data\Vertex.cs" />
     <Compile Include="STLenographer.cs">

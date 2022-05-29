@@ -11,6 +11,13 @@ namespace STLenographer.Data {
             _z = z;
         }
 
+        public Normal(Normal copy)
+        {
+            _x = copy._x;
+            _y = copy._y;
+            _z = copy._z;
+        }
+
         public float X {
             get { return _x; }
             set { _x = value; }
