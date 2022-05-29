@@ -3,41 +3,41 @@ using System.Collections.Generic;
 
 namespace STLenographer.Data {
     public class Triangle : IEquatable<Triangle> {
-        private readonly Normal _n;
-        private readonly Vertex _v1;
-        private readonly Vertex _v2;
-        private readonly Vertex _v3;
+        private readonly Vector3D _normal;
+        private readonly Vector3D _v1;
+        private readonly Vector3D _v2;
+        private readonly Vector3D _v3;
 
-        public Triangle(Vertex v1, Vertex v2, Vertex v3, Normal n) {
+        public Triangle(Vector3D v1, Vector3D v2, Vector3D v3, Vector3D normal) {
             if (v1 == null) throw new ArgumentNullException("v1");
             if (v2 == null) throw new ArgumentNullException("v2");
             if (v3 == null) throw new ArgumentNullException("v3");
-            if (n == null) throw new ArgumentNullException("n");
+            if (normal == null) throw new ArgumentNullException("n");
 
-            _v1 = new Vertex(v1);
-            _v2 = new Vertex(v2);
-            _v3 = new Vertex(v3);
-            _n = new Normal(n);
+            _v1 = new Vector3D(v1);
+            _v2 = new Vector3D(v2);
+            _v3 = new Vector3D(v3);
+            _normal = new Vector3D(normal);
         }
 
-        public Normal N {
-            get { return _n; }
+        public Vector3D N {
+            get { return _normal; }
         }
 
-        public Vertex V1 {
+        public Vector3D V1 {
             get { return _v1; }
         }
 
-        public Vertex V2 {
+        public Vector3D V2 {
             get { return _v2; }
         }
 
-        public Vertex V3 {
+        public Vector3D V3 {
             get { return _v3; }
         }
 
         public IEnumerable<Triangle> Subdivision { get {
-                Vertex center = new Vertex( (V1.X + V2.X + V3.X) / 3,
+                Vector3D center = new Vector3D( (V1.X + V2.X + V3.X) / 3,
                     (V1.Y + V2.Y + V3.Y) / 3,
                     (V1.Z + V2.Z + V3.Z) / 3);
 
@@ -48,7 +48,7 @@ namespace STLenographer.Data {
         }
 
         public override string ToString() {
-            return $"V1: {_v1.ToString()}, V1: {_v2.ToString()}, V1: {_v3.ToString()}, N: {_n.ToString()}";
+            return $"V1: {_v1.ToString()}, V1: {_v2.ToString()}, V1: {_v3.ToString()}, N: {_normal.ToString()}";
         }
 
         public bool Equals(Triangle other) {

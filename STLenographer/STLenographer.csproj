@@ -58,14 +58,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\ByteBitHelpers.cs" />
+    <Compile Include="Data\ByteReadHelper.cs" />
+    <Compile Include="Data\ByteWriteHelper.cs" />
     <Compile Include="Data\Helper.cs" />
-    <Compile Include="Data\Normal.cs" />
     <Compile Include="Data\RandomExtensions.cs" />
     <Compile Include="Data\StenographyReader.cs" />
     <Compile Include="Data\StenographyWriter.cs" />
     <Compile Include="Data\Triangle.cs" />
-    <Compile Include="Data\Vertex.cs" />
+    <Compile Include="Data\Vector3D.cs" />
     <Compile Include="STLenographer.cs">
       <SubType>Form</SubType>
     </Compile>

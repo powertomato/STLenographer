@@ -22,8 +22,8 @@ namespace STLenographer {
             comboBox2.SelectedIndex = list.IndexOf("UTF-8");
         }
 
-        private StlReaderBase<Triangle, Vertex, Normal> reader;
-        private StlWriterBase<Triangle, Vertex, Normal> writer;
+        private StlReaderBase<Triangle, Vector3D, Vector3D> reader;
+        private StlWriterBase<Triangle, Vector3D, Vector3D> writer;
 
         private String PathRead {
             get { return textBox1.Text; }
@@ -72,10 +72,10 @@ namespace STLenographer {
                 return false;
             }
             if (StlFile.IsBinaryFile(PathRead)) {
-                reader = new BinaryStlReader<Triangle, Vertex, Normal>(new DataCreator());
+                reader = new BinaryStlReader<Triangle, Vector3D, Vector3D>(new DataCreator());
                 writer = null;
             } else {
-                reader = new AsciiStlReader<Triangle, Vertex, Normal>(new DataCreator());
+                reader = new AsciiStlReader<Triangle, Vector3D, Vector3D>(new DataCreator());
                 writer = null;
             }
             
@@ -102,11 +102,11 @@ namespace STLenographer {
                 }
             }
             if (StlFile.IsBinaryFile(PathRead)) {
-                reader = new BinaryStlReader<Triangle, Vertex, Normal>(new DataCreator());
-                writer = new BinaryStlWriter<Triangle, Vertex, Normal>(new DataExtractor());
+                reader = new BinaryStlReader<Triangle, Vector3D, Vector3D>(new DataCreator());
+                writer = new BinaryStlWriter<Triangle, Vector3D, Vector3D>(new DataExtractor());
             } else {
-                reader = new AsciiStlReader<Triangle, Vertex, Normal>(new DataCreator());
-                writer = new AsciiStlWriter<Triangle, Vertex, Normal>(new DataExtractor());
+                reader = new AsciiStlReader<Triangle, Vector3D, Vector3D>(new DataCreator());
+                writer = new AsciiStlWriter<Triangle, Vector3D, Vector3D>(new DataExtractor());
             }
 
             return performStenography(MyEncoding.GetBytes(textBox3.Text));

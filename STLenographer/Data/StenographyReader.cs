@@ -7,12 +7,12 @@ namespace STLenographer.Data
     public class StenographyReader
     {
         ByteReadHelper readHelper;
-        HashSet<Vertex> knownVertices;
+        HashSet<Vector3D> knownVertices;
 
         public StenographyReader(ByteReadHelper readHelper)
         {
             this.readHelper = readHelper;
-            this.knownVertices = new HashSet<Vertex>();
+            this.knownVertices = new HashSet<Vector3D>();
         }
 
         public void ReadFromTriangles(IEnumerable<Triangle> triangles)
@@ -23,19 +23,19 @@ namespace STLenographer.Data
                 {
                     if (!(knownVertices.Contains(tri.V1)))
                     {
-                        Vertex tmp = new Vertex(tri.V1);
+                        Vector3D tmp = new Vector3D(tri.V1);
                         readStenographyPerVertex(tri.V1, readHelper);
                         knownVertices.Add(tmp);
                     }
                     if (!(knownVertices.Contains(tri.V2)))
                     {
-                        Vertex tmp = new Vertex(tri.V2);
+                        Vector3D tmp = new Vector3D(tri.V2);
                         readStenographyPerVertex(tri.V2, readHelper);
                         knownVertices.Add(tmp);
                     }
                     if (!(knownVertices.Contains(tri.V3)))
                     {
-                        Vertex tmp = new Vertex(tri.V3);
+                        Vector3D tmp = new Vector3D(tri.V3);
                         readStenographyPerVertex(tri.V3, readHelper);
                         knownVertices.Add(tmp);
                     }
@@ -43,7 +43,7 @@ namespace STLenographer.Data
             }
         }
 
-        private void readStenographyPerVertex(Vertex v, ByteReadHelper readHelper)
+        private void readStenographyPerVertex(Vector3D v, ByteReadHelper readHelper)
         {
             if (readHelper.HasReadEverything()) return;
             readHelper.SetCurrentBitAndMove(readStenographyByFloat(v.X));
