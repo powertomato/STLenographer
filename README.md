@@ -1,3 +1,5 @@
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?business=AUMCUSNPFU2PA&no_recurring=0&item_name=%28aka+powertomato%29+maker%2C+coder+and+wizard)
+
 # STLenographer
 Watermark STL files using stenography
 
